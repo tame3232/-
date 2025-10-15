@@ -1,1 +1,24 @@
-g
+{
+  "name": "school-library-twa-backend",
+  "version": "1.0.0",
+  "description": "Netlify function for Telegram Web App handling tasks and points.",
+  "main": "netlify/tbot_handler.js",
+  "scripts": {
+    "start": "echo 'Run this on your Telegram Web App environment.'",
+    "deploy": "netlify deploy"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "telegram",
+    "webapp",
+    "netlify",
+    "express",
+    "bot"
+  ],
+  "author": "",
+  "license": "ISC"
+}
