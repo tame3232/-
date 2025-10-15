@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School ላይብረሪ Shop</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        /* የስታይል ኮድ ሳይቀየር ይቀራል */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            padding-bottom: 70px; 
+            background-color: var(--tg-theme-bg-color, #f4f4f4);
+            color: var(--tg-theme-text-color, #333);
+            /* ለጨለማ ገጽታ ማስተካከያ */
+            --tg-theme-bg-color: #1a1a1a;
+            --tg-theme-secondary-bg-color: #2c2c2c;
+            --tg-theme-text-color: #ffffff;
+            --tg-theme-link-color: #00bfff; /* ሰማያዊ */
+            --tg-theme-hint-color: #aaaaaa;
+        }
+        h1, h2, h3 {
+            color: var(--tg-theme-link-color, #007bff);
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        .hidden-page {
+            display: none !important;
+        }
+        
+        /* አዲስ ስታይል: በቅደም ተከተል የሚከፈቱ ክፍሎችን ለመደበቅ */
+        .hidden-section {
+            display: none !important;
+        }
+        
+        /* ********** የጋራ ስታይሎች ********** */
+        .info-card {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            margin: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--tg-theme-bg-color, #eee);
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .green-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        /* ********** ለTasks አዲስ ስታይሎች ********** */
+        #tasks-main-container {
+            padding: 0 10px; 
+        }
+        .timer-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .timer-segment {
+            background-color: #333;
+            color: #FFC107;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 2em;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        .tasks-top-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .task-top-btn {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 15px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .task-top-btn.daily::before {
+            content: 'Daily';
+            position: absolute;
+            top: -5px;
+            right: 0;
+            background-color: #ff0000;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+        .task-top-btn i {
+            display: block;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .task-row-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: var(--tg-theme-secondary-bg-color, #2c2c2c);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .task-icon-large {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            margin-right: 15px;
+        }
+        .task-icon-road { background-color: #E91E63; } /* Pink-Red */
+        .task-icon-100x { background-color: #9C27B0; } /* Purple */
+        .task-icon-gift { background-color: #FFC107; } /* Yellow/Orange */
+        .task-text-content {
+            flex-grow: 1;
+        }
+        .task-title-large {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            color: var(--tg-theme-text-color, #ffffff);
+        }
+        .task-description {
+            font-size: 0.85em;
+            color: var(--tg-theme-hint-color, #aaa);
+            margin: 0;
+        }
+        .task-action-button {
+            background-color: #FFC107;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* ********** አዲስ ጌም ስታይሎች ********** */
+        /* Scratch Card */
+        #scratch-card {
+            width: 100%;
+            height: 150px;
+            background-color: #ffc107; /* Scratch surface color */
+            border-radius: 10px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1a1a1a;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        #scratch-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #6c757d; /* Scratch color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            font-weight: bold;
+            transition: opacity 0.5s;
+        }
+        
+        /* Lucky Box */
+        #luckybox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .lucky-box-item {
+            background-color: #9C27B0;
+            color: white;
+            height: 80px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .lucky-box-item.opened {
+            background-color: #4CAF50;
+            pointer-events: none;
+        }
+        .lucky-box-item.failed {
+            background-color: #dc3545;
+            pointer-events: none;
+        }
+        .lucky-box-item:active {
+            transform: scale(0.98);
+        }
+        .lucky-box-item i {
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .lucky-box-item.opened i {
+            opacity: 1;
+        }
+        /* ************************************** */
+
+
+        /* ********** Bottom Nav ስታይል (ከዋናው ኮድ ላይ ተጨምሯል) ********** */
+        #bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--tg-theme-secondary-bg-color, #2c2c2c);
+            border-top: 1px solid var(--tg-theme-hint-color, #444);
+            padding: 5px 0;
+            z-index: 1000;
+        }
+        .nav-item {
+            color: var(--tg-theme-hint-color, #aaa);
+            text-align: center;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            flex-grow: 1;
+            transition: color 0.3s;
+        }
+        .nav-item.active {
+            color: var(--tg-theme-link-color, #00bfff);
+        }
+        .nav-icon {
+            font-size: 1.5em;
+            margin-bottom: 2px;
+        }
+
+        /* ********** Profile Page ስታይል (ከዋናው ኮድ ላይ ተጨምሯል) ********** */
+        .profile-header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .profile-initial-circle {
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            background-color: #00bfff;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            margin: 0 auto 10px;
+        }
+        .profile-point-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #FFC107;
+            margin-top: 15px;
+        }
+        .profile-point-display small {
+            font-size: 0.6em;
+            color: var(--tg-theme-hint-color);
+        }
+        .profile-settings-list {
+            list-style: none;
+            padding: 0;
+        }
+        .profile-settings-list li {
+            background-color: var(--tg-theme-secondary-bg-color);
+            margin-bottom: 8px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .profile-settings-list i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tasks-page" style="margin: -10px; padding: 0;">
+        <div id="tasks-main-container">
+            <h2 style="text-align: center; color: var(--tg-theme-text-color); margin-top: 15px; font-size: 1.2em;">
+                ዕለታዊ ተግባራት ጊዜው
+            </h2>
+            
+            <div class="timer-display">
+                <div class="timer-segment" id="timer-hours">00</div>
+                <span>:</span>
+                <div class="timer-segment" id="timer-minutes">00</div>
+                <span>:</span>
+                <div class="timer-segment" id="timer-seconds">00</div>
+            </div>
+            
+            <div class="tasks-top-buttons">
+                <button class="task-top-btn daily" onclick="showTaskSection('scratch-details');" style="background-color: #FFC107;">
+                    <i class="fas fa-magic"></i>
+                    Scratch
+                </button>
+                
+                <button class="task-top-btn" onclick="showTaskSection('streak-details');" style="background-color: #28a745;">
+                    <i class="fas fa-calendar-check"></i>
+                    Streak
+                </button>
+                
+                <button class="task-top-btn" onclick="showTaskSection('luckybox-details');" style="background-color: #9C27B0;">
+                    <i class="fas fa-box-open"></i>
+                    Lucky Box
+                </button>
+            </div>
+            
+            <div id="tasks-list-view">
+                <div id="earning-section" class="task-row-card" onclick="showDetailTask('social-tasks-details');">
+                    <div class="task-icon-large task-icon-road">
+                        <i class="fab fa-telegram-plane"></i>
+                    </div>
+                    <div class="task-text-content">
+                        <p class="task-title-large">ROAD 📡 የቴሌግራም ኮሚኒቲ</p>
+                        <p class="task-description">የቴሌግራም ቻናል እና ግሩፕ በመቀላቀል ነጥብ ያግኙ።</p>
+                    </div>
+                    <button class="task-action-button" style="background-color: #E91E63;">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div id="quiz-section-main" class="task-row-card" onclick="showDetailTask('quiz-details');">
+                    <div class="task-icon-large task-icon-100x">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="task-text-content">
+                        <p class="task-title-large">100X 💡 የጭንቅላት ጥያቄዎች</p>
+                        <p class="task-description">በአለም አቀፍ ጥያቄዎች ዕውቀትዎን ይፈትሹ (5/24 ሰዓት)</p>
+                    </div>
+                    <button class="task-action-button" style="background-color: #9C27B0;">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div id="daily-bonus-main" class="task-row-card" onclick="handleDailyClaim();">
+                    <div class="task-icon-large task-icon-gift">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="task-text-content">
+                        <p class="task-title-large">🎁 ዕለታዊ ሽልማት</p>
+                        <p class="task-description" id="daily-claim-status">የእለቱ ነፃ ጉርሻ! (+500 ነጥብ)</p>
+                    </div>
+                    <button class="task-action-button" 
+                            id="daily-claim-button" 
+                            data-claimed="false" 
+                            style="background-color: #4CAF50;">
+                        ውሰድ!
+                    </button>
+                </div>
+            </div>
+            
+            <div id="scratch-details" class="info-card hidden-section" style="text-align: center; padding: 20px;">
+                <h3 style="color: #FFC107;">🃏 ዕለታዊ Scratch Card</h3>
+                <p id="scratch-status">በየ 24 ሰዓቱ አንድ ዕድል አለዎት! (+50 - +500 ነጥብ)</p>
+                
+                <div id="scratch-card" onclick="startScratch();">
+                    <div id="scratch-overlay">SCRATCH ME!</div>
+                    <span id="scratch-prize" style="opacity: 0;">0 ነጥብ</span>
+                </div>
+                
+                <button class="green-button" id="reset-scratch-button" onclick="resetScratchGame();" style="width: 100%; padding: 12px; font-size: 1.1em; background-color: #dc3545; margin-top: 15px; display: none;">
+                    ዳግም ጀምር (Reset)
+                </button>
+                
+                <button class="green-button" onclick="showTaskSection('main');" style="margin-top: 15px; background-color: #6c757d; width: 100%;">
+                    ወደ ኋላ
+                </button>
+            </div>
+            <div id="luckybox-details" class="info-card hidden-section" style="text-align: center; padding: 20px;">
+                <h3 style="color: #9C27B0;">📦 Lucky Box Game</h3>
+                <p id="luckybox-status">በቀን አንድ ጊዜ ይምረጡ! (2 ዕድሎች ቀርተዋል)</p>
+                
+                <div id="luckybox-grid">
+                    </div>
+                
+                <button class="green-button" id="luckybox-play-button" onclick="startLuckyBoxGame();" style="width: 100%; padding: 12px; font-size: 1.1em; background-color: #9C27B0; margin-top: 15px;">
+                    ዕድልዎን ይሞክሩ!
+                </button>
+                
+                <button class="green-button" onclick="showTaskSection('main');" style="margin-top: 15px; background-color: #6c757d; width: 100%;">
+                    ወደ ኋላ
+                </button>
+            </div>
+            <div id="streak-details" class="info-card hidden-section" style="text-align: center; padding: 20px;">
+                <h3 style="color: #28a745;">🔥 ተከታታይ የጉብኝት ሽልማት (Streak)</h3>
+                <p>በተከታታይ በመግባትዎ ነጥብ ያግኙ!</p>
+                
+                <div class="info-card" style="margin: 10px 0; background-color: #444;">
+                    <p style="font-weight: bold; margin-bottom: 5px;">የአሁንዎ Streak: <span id="current-streak-display">0</span> ቀናት</p>
+                    <p style="font-weight: bold; margin-bottom: 5px; color: #FFC107;">የዛሬው ነጥብ: <span id="streak-today-points">+0</span> ነጥብ</p>
+                </div>
+                
+                <div id="streak-days-container" style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap;">
+                     </div>
+                
+                <button class="green-button" id="claim-streak-button" onclick="handleStreakClaim();" style="width: 100%; padding: 12px; font-size: 1.1em; background-color: #28a745;">
+                    የዛሬውን ሽልማት ውሰድ!
+                </button>
+                
+                <button class="green-button" onclick="showTaskSection('main');" style="margin-top: 15px; background-color: #6c757d; width: 100%;">
+                    ወደ ኋላ
+                </button>
+            </div>
+            <div id="social-tasks-details" class="info-card hidden-section" style="margin-top: 25px;">
+                <h3 style="color: #E91E63; border-bottom: 1px solid #444; padding-bottom: 5px;">🔥 የማህበራዊ Tasks</h3>
+                
+                <div class="info-item" id="task-tg-ch">
+                    <span class="item-label">
+                        <i class="fab fa-telegram-plane" style="color: #0088cc; margin-right: 5px;"></i> 
+                        ቴሌግራም ቻናል ተቀላቀል
+                    </span>
+                    <span class="item-value">+150 ነጥብ</span>
+                    <button class="green-button task-button" 
+                            data-task-id="TG_CH" 
+                            data-points="150"
+                            data-url="https://t.me/ethio_schoollibrary"
+                            data-task-text="ተቀላቀል!"
+                            onclick="handleTaskClick('TG_CH', 'https://t.me/ethio_schoollibrary');">
+                        ተቀላቀል!
+                    </button>
+                </div>
+
+                <div class="info-item" id="task-tg-gp">
+                    <span class="item-label">
+                        <i class="fab fa-telegram-plane" style="color: #00a4e4; margin-right: 5px;"></i> 
+                        ቴሌግራም ግሩፕ ተቀላቀል
+                    </span>
+                    <span class="item-value">+100 ነጥብ</span>
+                    <button class="green-button task-button" 
+                            data-task-id="TG_GP" 
+                            data-points="100"
+                            data-url="https://t.me/school_library2012"
+                            data-task-text="ተቀላቀል!"
+                            onclick="handleTaskClick('TG_GP', 'https://t.me/school_library2012');">
+                        ተቀላቀል!
+                    </button>
+                </div>
+
+                <div class="info-item" id="task-yt-sub" style="border-bottom: none;">
+                    <span class="item-label">
+                        <i class="fab fa-youtube" style="color: #ff0000; margin-right: 5px;"></i> 
+                        ዩቲዩብ ሰብስክራይብ
+                    </span>
+                    <span class="item-value">+300 ነጥብ</span>
+                    <button class="green-button task-button" 
+                            data-task-id="YT_SUB" 
+                            data-points="300"
+                            data-url="YOUR_YOUTUBE_CHANNEL_LINK_HERE"
+                            data-task-text="ሰብስክራይብ"
+                            onclick="handleTaskClick('YT_SUB', 'YOUR_YOUTUBE_CHANNEL_LINK_HERE');">
+                        ሰብስክራይብ
+                    </button>
+                </div>
+                 <button class="green-button" onclick="showTaskSection('main');" style="margin-top: 15px; background-color: #6c757d; width: 100%;">
+                    ወደ ኋላ
+                </button>
+            </div> 
+            
+            <div id="quiz-details" class="info-card hidden-section" style="text-align: center; padding: 20px;">
+                <h3 style="color: #9C27B0;">💡 የጭንቅላት ጥያቄዎች</h3>
+                <p>በ24 ሰዓት ውስጥ **5** ጥያቄዎች ብቻ</p>
+                
+                <div class="info-card" style="margin: 10px 0; background-color: #444;">
+                    <p style="font-weight: bold; margin-bottom: 5px;">ቀሪ ሙከራዎች: <span id="quiz-attempts-left">0</span></p>
+                     <p id="quiz-timer-display" style="color: #dc3545; font-weight: bold; margin-top: 10px; display: none;">
+                        ድጋሚ ለመጫወት: <span id="quiz-countdown">...</span>
+                    </p>
+                </div>
+                
+                <button class="green-button" onclick="alert('በቅርብ ቀን ይጠብቁ ...');" style="width: 100%; padding: 12px; font-size: 1.1em; background-color: #9C27B0;">
+                    ዕውቀትዎን ይሞክሩ (+100 ነጥብ)
+                </button>
+                
+                <button class="green-button" onclick="showTaskSection('main');" style="margin-top: 15px; background-color: #6c757d; width: 100%;">
+                    ወደ ኋላ
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="shop-page" class="hidden-page">
+        <h2 style="text-align: center;">📚 የመጽሐፍ ካታሎግ</h2>
+        <div id="book-catalog">
+            <p style="text-align: center; margin-top: 50px; color: var(--tg-theme-hint-color);">ካታሎግ በቅርብ ቀን ይጫናል...</p>
+        </div>
+    </div>
+    
+    <div id="top-page" class="hidden-page">
+        <h2 style="text-align: center;">🏆 ከፍተኛ ተጠቃሚዎች</h2>
+        <p style="text-align: center; margin-top: 50px; color: var(--tg-theme-hint-color);">ይህ ገጽ በቅርብ ቀን ይለቀቃል...</p>
+    </div>
+
+    <div id="profile-page" class="hidden-page">
+        <div class="profile-header">
+            <div class="profile-initial-circle" id="profile-initial">?</div>
+            <h3 id="display-username">Loading...</h3>
+            <div class="profile-point-display">
+                <span id="user-points">0</span>
+                <small>ነጥቦች</small>
+            </div>
+        </div>
+        
+        <ul class="profile-settings-list info-card" style="margin-bottom: 0;">
+            <li onclick="tg.showAlert('በቅርብ ቀን ይጠብቁ...');">
+                <span><i class="fas fa-history" style="color: #00bfff;"></i> የግብይት ታሪክ</span>
+                <i class="fas fa-chevron-right" style="color: var(--tg-theme-hint-color);"></i>
+            </li>
+            <li onclick="tg.showAlert('በቅርብ ቀን ይጠብቁ...');">
+                <span><i class="fas fa-question-circle" style="color: #FFC107;"></i> እርዳታ እና ድጋፍ</span>
+                <i class="fas fa-chevron-right" style="color: var(--tg-theme-hint-color);"></i>
+            </li>
+        </ul>
+        
+        <div class="info-card" style="text-align: center; margin-top: 20px;">
+            <p style="color: var(--tg-theme-hint-color); font-size: 0.9em;">
+                User ID: <span id="user-id-display">N/A</span>
+            </p>
+        </div>
+    </div>
+    <div id="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('tasks');">
+            <div class="nav-icon"><i class="fas fa-bolt"></i></div>
+            Tasks
+        </div>
+        <div id="shop-nav" class="nav-item" onclick="switchPage('shop');">
+            <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
+            Shop
+        </div>
+        <div class="nav-item" onclick="switchPage('top');">
+            <div class="nav-icon"><i class="fas fa-crown"></i></div>
+            Top
+        </div>
+        <div id="profile-nav" class="nav-item" onclick="switchPage('profile');">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            Profile
+        </div>
+    </div>
+    <script>
+        // 1. የቴሌግራም ዌብ አፕ ዋና ነገር
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        
+        // 💡 ወሳኝ ማሻሻያ: የ Backend Function አድራሻዎ
+        const NETLIFY_FUNCTION_URL = '/.netlify/functions/tbot_handler';
+        
+        // ********** ከ Backend የሚመጡ ተለዋዋጮች (በቦቱ ዳታቤዝ ላይ የተቀመጡ) **********
+        let currentPoints = 0; 
+        
+        let quizAttempts = 0; 
+        let quizMaxAttempts = 5; 
+        let quizResetTime = 0; // last quiz timestamp (ms)
+        let socialTasksStatus = {}; 
+        let dailyClaimTime = 0; // last daily claim timestamp (ms)
+        
+        let currentStreak = 0;
+        let lastStreakClaimTime = 0;
+        let streakClaimedToday = false; 
+
+        // 💡 አዲስ የጌም ተለዋዋጮች
+        let scratchClaimTime = 0; // የመጨረሻው የ Scratch Claim ጊዜ
+        let luckyboxClaimTime = 0; // የመጨረሻው የ Lucky Box Claim ጊዜ
+        let luckyboxAttempts = 2; // የ Lucky Box ሙከራዎች
+        const MAX_LUCKYBOX_ATTEMPTS = 2;
+
+
+        const DAILY_RESET_MS = 24 * 60 * 60 * 1000;
+        let mainTimerInterval = null;
+        
+        // ************************************************************************
+
+
+        // ********** የመነሻ ዳታ መጫን (Backendን በቀጥታ የሚጠራ) **********
+        function loadInitialData() {
+            const initialDataRequest = {
+                action: "request_initial_data",
+                init_data: tg.initData 
+            };
+
+            fetch(NETLIFY_FUNCTION_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(initialDataRequest)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                processBotResponse(data);
+            })
+            .catch(error => {
+                console.error('Frontend Fetch Error:', error);
+            });
+            
+            updatePointsDisplay(0);
+        }
+        
+        // ********** የጋራ እና የፕሮፋይል ተግባራት **********
+        function initializeProfile() {
+            const userIdDisplay = document.getElementById('user-id-display');
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                const username = user.username || (user.first_name + " " + (user.last_name || "")).trim();
+                document.getElementById('display-username').textContent = username;
+                document.getElementById('profile-initial').textContent = username.charAt(0).toUpperCase();
+                userIdDisplay.textContent = user.id;
+            } else {
+                 userIdDisplay.textContent = 'UNKNOWN';
+            }
+            updatePointsDisplay(currentPoints);
+        }
+
+        // ********** የገጽ መቀየሪያ ተግባር (Switch Page Logic) **********
+        function switchPage(pageName) {
+            const pages = ['shop-page', 'profile-page', 'tasks-page', 'top-page'];
+            const navItems = document.querySelectorAll('#bottom-nav .nav-item');
+            
+            pages.forEach(id => {
+                const pageElement = document.getElementById(id);
+                if (pageElement) {
+                    pageElement.classList.add('hidden-page');
+                }
+            });
+            
+            const selectedPageId = `${pageName}-page`;
+            const selectedPageElement = document.getElementById(selectedPageId);
+            if (selectedPageElement) {
+                selectedPageElement.classList.remove('hidden-page');
+            }
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.onclick.toString().includes(`'${pageName}'`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            if (pageName === 'tasks') {
+                showTaskSection('main'); 
+                startMainCountdown();
+            } else {
+                clearInterval(mainTimerInterval);
+            }
+            
+             if (pageName === 'profile') {
+                initializeProfile(); 
+            }
+             if (pageName === 'shop') {
+                // updateCartDisplay(); // Placeholder
+            } else {
+                tg.MainButton.hide();
+            }
+        }
+        
+        // ********** የዋና Tasks ገጽ ሰዓት ቆጣሪ **********
+        function startMainCountdown() {
+             clearInterval(mainTimerInterval); 
+             
+             // ለሁሉም Tasks (Quiz, Daily Claim, Streak, Scratch, Lucky Box) ዳግም ማስጀመር የሚቀረውን ከፍተኛ ጊዜ ይጠቀማል
+             let latestResetTime = Math.max(lastStreakClaimTime, quizResetTime, dailyClaimTime, scratchClaimTime, luckyboxClaimTime);
+             
+             if (latestResetTime === 0) {
+                 // ... Timer UI reset ...
+                 return;
+             }
+
+             function updateMainTimer() {
+                const now = Date.now();
+                const elapsed = now - latestResetTime; 
+                const remaining = DAILY_RESET_MS - elapsed;
+
+                if (remaining <= 0) {
+                    clearInterval(mainTimerInterval);
+                    
+                    // ዳግም ማስጀመር የሚያስፈልገው ከሆነ ዳታውን ከ Backend ይጠይቃል
+                    fetch(NETLIFY_FUNCTION_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            action: "request_full_reset", 
+                            init_data: tg.initData
+                        })
+                    }).then(r => r.json()).then(processBotResponse).catch(e => console.error("Full Reset Error:", e));
+                    
+                    // ... Timer UI reset ...
+                    return;
+                }
+
+                const totalSeconds = Math.floor(remaining / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                document.getElementById('timer-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('timer-minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('timer-seconds').textContent = String(seconds).padStart(2, '0');
+            }
+
+            mainTimerInterval = setInterval(updateMainTimer, 1000);
+            updateMainTimer(); 
+        }
+
+        // ********** 💡 አዲስ: Scratch Card Game Logic (Placeholder) **********
+        let scratchFinished = false;
+
+        function updateScratchDisplay() {
+            const now = Date.now();
+            const timeElapsed = now - scratchClaimTime;
+            const eligible = timeElapsed >= DAILY_RESET_MS;
+            const overlay = document.getElementById('scratch-overlay');
+            const button = document.getElementById('reset-scratch-button');
+            const status = document.getElementById('scratch-status');
+
+            if (eligible) {
+                overlay.style.opacity = '1';
+                overlay.textContent = 'SCRATCH ME!';
+                scratchFinished = false;
+                button.style.display = 'none';
+                status.textContent = "በየ 24 ሰዓቱ አንድ ዕድል አለዎት! (+50 - +500 ነጥብ)";
+            } else {
+                overlay.style.opacity = '0';
+                scratchFinished = true;
+                button.style.display = 'block';
+                status.textContent = "✅ የዛሬው ዕድል ተወስዷል! ለነገ ይጠብቁ።";
+            }
+        }
+
+        function startScratch() {
+            if (scratchFinished) {
+                tg.showAlert("⚠️ የዛሬውን Scratch Card አስቀድመው ቧጥረዋል። ለነገ ይመለሱ!");
+                return;
+            }
+            
+            const overlay = document.getElementById('scratch-overlay');
+            const prizeElement = document.getElementById('scratch-prize');
+            
+            // የ Scratch Effect Placeholder (በእውነተኛው ጨዋታ Canvas ጥቅም ላይ ይውላል)
+            overlay.style.opacity = '0';
+            scratchFinished = true;
+            
+            // የ Prize Calculation Placeholder (በእውነተኛው ጨዋታ Backend ይወስናል)
+            const prize = Math.floor(Math.random() * (500 - 50 + 1)) + 50; 
+            prizeElement.textContent = `+${prize} ነጥብ`;
+            prizeElement.style.opacity = '1';
+            
+            // ወደ Backend የመላክ Placeholder
+            handleGameClaim('scratch_card', prize); 
+            
+            document.getElementById('reset-scratch-button').style.display = 'block';
+            document.getElementById('scratch-status').textContent = `🎉 ${prize} ነጥብ አግኝተዋል!`;
+        }
+        
+        function resetScratchGame() {
+            // ለሙከራ ብቻ! በእውነተኛው ጨዋታ ዳግም የሚጀምረው ከ24 ሰዓታት በኋላ ነው!
+            tg.showAlert("ማስታወሻ: ይህ አዝራር ለጊዜያዊ ዳግም ማስጀመር ብቻ ነው። የነጥብ ዳግም ማስጀመር የሚደረገው ከ24 ሰዓት በኋላ ነው።");
+            
+            const overlay = document.getElementById('scratch-overlay');
+            const prizeElement = document.getElementById('scratch-prize');
+            
+            overlay.style.opacity = '1';
+            prizeElement.style.opacity = '0';
+            scratchFinished = false;
+            
+            document.getElementById('reset-scratch-button').style.display = 'none';
+            updateScratchDisplay();
+        }
+
+        // ********** 💡 አዲስ: Lucky Box Game Logic (Placeholder) **********
+        let boxesGenerated = false;
+        
+        function updateLuckyBoxDisplay() {
+            const status = document.getElementById('luckybox-status');
+            const button = document.getElementById('luckybox-play-button');
+            
+            if (luckyboxAttempts > 0) {
+                status.textContent = `በቀን አንድ ጊዜ ይምረጡ! (${luckyboxAttempts} ዕድሎች ቀርተዋል)`;
+                button.textContent = "ዕድልዎን ይሞክሩ!";
+                button.disabled = false;
+                if (!boxesGenerated) {
+                    generateLuckyBoxes();
+                }
+            } else {
+                 status.textContent = `✅ የዛሬ ዕድሎችዎ ተጠናቀዋል! ለነገ ይጠብቁ።`;
+                 button.textContent = "ይጠብቁ...";
+                 button.disabled = true;
+            }
+        }
+        
+        function generateLuckyBoxes() {
+            const grid = document.getElementById('luckybox-grid');
+            grid.innerHTML = '';
+            
+            // 9 Boxes, 3 prizes
+            const prizes = [
+                { type: 'points', value: 100, icon: 'fas fa-coins' },
+                { type: 'points', value: 200, icon: 'fas fa-dollar-sign' },
+                { type: 'bonus', value: 500, icon: 'fas fa-gift' }
+            ];
+            
+            // የ Prizes ቦታዎችን መምረጥ (3 ቦታዎች)
+            let prizePositions = [];
+            while (prizePositions.length < prizes.length) {
+                const rand = Math.floor(Math.random() * 9);
+                if (!prizePositions.includes(rand)) {
+                    prizePositions.push(rand);
+                }
+            }
+            
+            for (let i = 0; i < 9; i++) {
+                const item = document.createElement('div');
+                item.className = 'lucky-box-item';
+                item.dataset.index = i;
+                
+                const isPrize = prizePositions.includes(i);
+                
+                if (isPrize) {
+                    const prizeData = prizes[prizePositions.indexOf(i)];
+                    item.dataset.prizeType = prizeData.type;
+                    item.dataset.prizeValue = prizeData.value;
+                    item.innerHTML = `<i class="${prizeData.icon}"></i>`;
+                } else {
+                    item.dataset.prizeType = 'fail';
+                    item.innerHTML = `<i class="fas fa-times"></i>`;
+                }
+
+                item.onclick = () => handleBoxClick(item);
+                grid.appendChild(item);
+            }
+            boxesGenerated = true;
+        }
+
+        function handleBoxClick(boxElement) {
+            if (boxElement.classList.contains('opened') || boxElement.classList.contains('failed') || luckyboxAttempts <= 0) {
+                return;
+            }
+            
+            luckyboxAttempts--; 
+            updateLuckyBoxDisplay();
+            
+            const prizeType = boxElement.dataset.prizeType;
+            
+            if (prizeType !== 'fail') {
+                const prizeValue = parseInt(boxElement.dataset.prizeValue);
+                boxElement.classList.add('opened');
+                tg.showAlert(`🎉 እንኳን ደስ አለህ! ${prizeValue} ነጥብ አግኝተዋል!`);
+                // ወደ Backend መላክ
+                handleGameClaim('lucky_box', prizeValue); 
+            } else {
+                boxElement.classList.add('failed');
+                tg.showAlert("❌ ባዶ ነበር! መልካም ዕድል በሚቀጥለው ሙከራ!");
+            }
+            
+            // ሁሉንም ሳጥኖች ወዲያውኑ ማሳየት (ከተጫወተ በኋላ)
+            if (luckyboxAttempts === 0) {
+                 setTimeout(() => {
+                    document.querySelectorAll('.lucky-box-item').forEach(box => {
+                        if (!box.classList.contains('opened') && !box.classList.contains('failed')) {
+                            box.classList.add('failed');
+                        }
+                    });
+                 }, 1000);
+            }
+        }
+        
+        function startLuckyBoxGame() {
+            if (luckyboxAttempts === 0) {
+                tg.showAlert("⚠️ የዛሬ ዕድሎችዎ ተጠናቀዋል። ለነገ ይመለሱ!");
+                return;
+            }
+            // ጨዋታው ሁሌም ዝግጁ ስለሆነ አዝራሩን መጫን ብቻውን አይበቃም
+            // ሳጥኖቹ ሲጫኑ ነው ሙከራው የሚቆጠረው
+            tg.showAlert(`3 ሳጥኖች ዕድል አላቸው! ለመምረጥ ${luckyboxAttempts} ሙከራዎች ቀርተዋል!`);
+        }
+        // ***************************************************************
+
+
+        // ********** የጨዋታ ነጥብ መውሰጃ (General Game Claim) **********
+        function handleGameClaim(gameId, pointsGained) {
+             const claimData = {
+                action: "claim_game_prize", 
+                game_id: gameId,
+                points_gained: pointsGained, // ይህ ነጥብ ከጨዋታው ውጤት የተገኘ ነው
+                init_data: tg.initData 
+            };
+            
+            // ለ Scratch እና Lucky Box የ Backend ጊዜ ማስተካከያ
+            if (gameId === 'scratch_card') {
+                scratchClaimTime = Date.now();
+            } else if (gameId === 'lucky_box') {
+                // የ Lucky Box ጊዜ የሚስተካከለው ሙከራው ሲያልቅ ወይም 24 ሰዓት ሲያልፍ ነው
+                luckyboxClaimTime = Date.now(); 
+            }
+            
+            fetch(NETLIFY_FUNCTION_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(claimData)
+            })
+            .then(r => r.json())
+            .then(processBotResponse)
+            .catch(e => {
+                console.error(`Game Claim Fetch Error for ${gameId}:`, e);
+                tg.showAlert(`❌ የ ${gameId} ሽልማት ሲጠየቅ ችግር ተፈጠረ!`);
+            });
+            
+            updatePointsDisplay(currentPoints + pointsGained);
+            startMainCountdown();
+        }
+
+        // ... (Streak, Quiz, Social, Daily Claim Logic ሳይነካ ቀርቷል) ...
+        
+        function updatePointsDisplay(newPoints) {
+            currentPoints = newPoints;
+            const pointElement = document.getElementById('user-points');
+            if(pointElement) pointElement.textContent = currentPoints;
+        }
+
+
+        // ********** በ Tasks ገጽ ላይ ያሉ ክፍሎችን መቀያየር **********
+        function showTaskSection(sectionId) {
+            const mainTasks = document.getElementById('tasks-list-view');
+            // 💡 አዲስ: scratch-details እና luckybox-details ታክለዋል
+            const detailSections = ['streak-details', 'social-tasks-details', 'quiz-details', 'scratch-details', 'luckybox-details'];
+            
+            // ሁሉንም የ Detail Sections ደብቅ
+            detailSections.forEach(id => {
+                 const section = document.getElementById(id);
+                 if(section) section.classList.add('hidden-section');
+            });
+
+            // ዋናውን ዝርዝር አሳይ/ደብቅ
+            if (sectionId === 'main') {
+                mainTasks.classList.remove('hidden-section');
+                // updateDailyBonusDisplay(); // Placeholder
+                startMainCountdown();
+            } else {
+                 mainTasks.classList.add('hidden-section');
+                // ዝርዝር ገጽ ከሆነ
+                const selectedSection = document.getElementById(sectionId);
+                if (selectedSection) {
+                    selectedSection.classList.remove('hidden-section');
+                }
+                
+                if (sectionId === 'streak-details') {
+                    // updateStreakDisplay(); // Placeholder
+                } else if (sectionId === 'social-tasks-details') {
+                    // updateTaskDisplay(socialTasksStatus); // Placeholder
+                } else if (sectionId === 'quiz-details') {
+                    // updateQuizDisplay(); // Placeholder
+                } else if (sectionId === 'scratch-details') {
+                    updateScratchDisplay(); 
+                } else if (sectionId === 'luckybox-details') {
+                    luckyboxAttempts = luckyboxAttempts || MAX_LUCKYBOX_ATTEMPTS;
+                    updateLuckyBoxDisplay();
+                }
+            }
+        }
+        
+        // ********** ከቦቱ የሚመጣውን ምላሽ የሚቆጣጠር ዋና ተግባር **********
+        function processBotResponse(data) {
+            
+            if (data.action === "initial_data") {
+                 updatePointsDisplay(data.points || 0);
+                
+                // ... (Profile data)
+                
+                quizAttempts = data.quiz_data ? (data.quiz_data.attempts || 0) : 0;
+                quizResetTime = data.quiz_data ? (data.quiz_data.last_quiz || 0) : 0;
+                
+                currentStreak = data.streak_data ? (data.streak_data.current_streak || 0) : 0;
+                lastStreakClaimTime = data.streak_data ? (data.streak_data.last_claim || 0) : 0;
+                streakClaimedToday = data.streak_data ? (data.streak_data.claimed_today || false) : false; 
+                
+                // 💡 አዲስ የጌም ዳታ
+                scratchClaimTime = data.scratch_data ? (data.scratch_data.last_claim || 0) : 0;
+                luckyboxClaimTime = data.luckybox_data ? (data.luckybox_data.last_claim || 0) : 0;
+                luckyboxAttempts = data.luckybox_data ? (data.luckybox_data.attempts || MAX_LUCKYBOX_ATTEMPTS) : MAX_LUCKYBOX_ATTEMPTS;
+
+                // updateTaskDisplay(data.tasks_status || {}); // Placeholder
+                
+                if (data.daily_bonus) {
+                     dailyClaimTime = data.daily_bonus.last_claim || 0; 
+                }
+
+                // TWA ከተከፈተ በኋላ ዳታው ሲመጣ UIን አዘምን
+                // updateDailyBonusDisplay(); // Placeholder
+                // updateQuizDisplay(); // Placeholder
+                // updateStreakDisplay(); // Placeholder
+                updateScratchDisplay(); 
+                updateLuckyBoxDisplay(); 
+                startMainCountdown();
+                
+            }
+            
+             // ... (ሌሎች ምላሾች: task_verified, daily_bonus_claimed, streak_claimed) ...
+            
+             // 5. ሙከራዎች ከ24 ሰዓት በኋላ ሲያድሱ
+            else if (data.action === "attempts_refreshed" || data.action === "full_reset") {
+                // ... (Quiz, Streak, Daily)
+                
+                // 💡 አዲስ: የጌም ዳታ ዳግም ሲጀመር
+                scratchClaimTime = data.scratch_data ? (data.scratch_data.last_claim || 0) : 0;
+                luckyboxClaimTime = data.luckybox_data ? (data.luckybox_data.last_claim || 0) : 0;
+                luckyboxAttempts = data.luckybox_data ? (data.luckybox_data.attempts || MAX_LUCKYBOX_ATTEMPTS) : MAX_LUCKYBOX_ATTEMPTS;
+
+                // updateQuizDisplay(); // Placeholder
+                // updateStreakDisplay(); // Placeholder
+                updateScratchDisplay(); 
+                updateLuckyBoxDisplay(); 
+                startMainCountdown();
+                tg.showAlert("✅ ዕለታዊ Tasksዎ ታድሰዋል!");
+            }
+            
+            // 💡 6. የጨዋታ ሽልማት ምላሽ (Game Claim Response)
+            else if (data.action === "game_prize_claimed") {
+                updatePointsDisplay(data.new_points || currentPoints);
+                
+                if (data.game_id === 'scratch_card') {
+                    scratchClaimTime = data.last_claim || Date.now();
+                } else if (data.game_id === 'lucky_box') {
+                    luckyboxAttempts = data.new_attempts || luckyboxAttempts;
+                    luckyboxClaimTime = data.last_claim || Date.now(); 
+                }
+                
+                // tg.showAlert(`🎉 ${data.game_id} ሽልማት ተወስዷል!`);
+                // updateScratchDisplay();
+                // updateLuckyBoxDisplay();
+            }
+        }
+        
+        // የቦት ምላሽ የሚቀበለው ዋና ተግባር (ይህ የሚሰራው Botው web_app_data ሲመልስ ብቻ ነው)
+        tg.onEvent('web_app_data', (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                processBotResponse(data);
+            } catch (e) {
+                console.error("Error processing web_app_data:", e);
+                tg.showAlert("ከቦቱ መልስ ሲቀበል ችግር ተፈጥሯል! (ኮንሶል ይመልከቱ)");
+            }
+        });
+
+        // መተግበሪያው ሲጀምር የሚጠሩ ተግባራት
+        loadInitialData(); 
+        
+        switchPage('tasks'); // በ Tasks ገጽ ይጀምራል
+
+    </script>
+</body>
+</html>
+
