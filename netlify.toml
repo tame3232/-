@@ -1,3 +1,34 @@
+# netlify.toml
+
+# -------------------------------------------------------------
+# 1. የ Build ቅንብሮች (Frontend Build)
+# -------------------------------------------------------------
 [build]
-  functions = "netlify"
+  # ዋናውን የ Mini App ፋይሎች የት እንደሚያገኝ ይገልጻል (Frontend)
+  publish = "/"
+  # የ Build ትዕዛዝ የለም (ምክንያቱም ኮድዎ React/Vue ስላልሆነ)
+  command = "echo 'No frontend build required'"
+
+# -------------------------------------------------------------
+# 2. የ Netlify Functions ቅንብሮች (Backend)
+# -------------------------------------------------------------
+[functions]
+  # የእርስዎ Netlify Function ፋይሎች የሚገኙበት ፎልደር
+  directory = "netlify"
+  # የ Node.js ስሪት ለ Function
+  # Netlify Functions Node 18 ወይም 20 እንዲጠቀሙ ይመከራል
+  node_version = "18"
+
+# -------------------------------------------------------------
+# 3. API Redirect Rule (ወደ Functionዎ የሚወስድ መንገድ)
+# -------------------------------------------------------------
+[[redirects]]
+  # ከ Mini App የሚመጣ ጥያቄ (fetch)
+  from = "/.netlify/functions/tbot_handler"
+  # ወደዚህ Function ይምራው
+  to = "/.netlify/functions/tbot_handler"
+  # መልኩ (type) እንደገና የሚመራ መሆኑን ይገልጻል
+  status = 200
+  force = true
+
 
